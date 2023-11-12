@@ -68,32 +68,32 @@ class FetchFrom implements ShouldQueue
                         $emailAddress = $matches[2];
                         $main_domain = explode('@', $matches[2])[1];
                     }
-                    $p_d =ParentDomain::where('parent_domain',$domain)->first();
-                    if($p_d){
-                        $p_d->count = $p_d->count + 1;
-                        $p_d->save();
-                    }else{
-                        $p_d = new ParentDomain();
-                        $p_d->parent_domain = $domain;
-                        $p_d->count = 1;
-                        $p_d->save();
-                    }
-                    $dom = Domain::where('domain',$main_domain)->where('parent_domain',$p_d->id)->first();
-                    if($dom){
-                        $dom->count = $dom->count + 1;
-                        $dom->save();
-                    }else{
-                        $dom = new Domain();
-                        $dom->domain = $main_domain;
-                        $dom->parent_domain = $p_d->id;
-                        $dom->count = 1;
-                        $dom->save();
-                    }
                     $em = EmailFrom::where('email_from',$emailAddress)->where('email_id',$this->acc_id)->first();
                     if($em){
                         $em->count = $em->count + 1;
                         $em->save();
                     }else{
+                        $p_d =ParentDomain::where('parent_domain',$domain)->first();
+                        if($p_d){
+                            $p_d->count = $p_d->count + 1;
+                            $p_d->save();
+                        }else{
+                            $p_d = new ParentDomain();
+                            $p_d->parent_domain = $domain;
+                            $p_d->count = 1;
+                            $p_d->save();
+                        }
+                        $dom = Domain::where('domain',$main_domain)->where('parent_domain',$p_d->id)->first();
+                        if($dom){
+                            $dom->count = $dom->count + 1;
+                            $dom->save();
+                        }else{
+                            $dom = new Domain();
+                            $dom->domain = $main_domain;
+                            $dom->parent_domain = $p_d->id;
+                            $dom->count = 1;
+                            $dom->save();
+                        }
                         $email_from = new EmailFrom();
                         $email_from->domain_id = $dom->id;
                         $email_from->parent_domain_id = $p_d->id;
