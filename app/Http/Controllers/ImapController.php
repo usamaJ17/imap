@@ -95,7 +95,7 @@ class ImapController extends Controller
         $email_conf->save();
         $parts = floor($count / 100) + 1;
         for ($i=1; $i <= $parts; $i++) { 
-            FetchFrom::dispatch($inboxFolder,$i,$request->account_id,$email_conf->email,$email_conf->app_password);
+            FetchFrom::dispatch($i,$request->account_id,$email_conf->email,$email_conf->app_password);
         }
         return redirect()->back()->with('message', 'Emails Storing Started.');
     }

@@ -27,9 +27,8 @@ class FetchFrom implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct($inboxFolder,$part,$acc_id,$email,$email_password)
+    public function __construct($part,$acc_id,$email,$email_password)
     {
-        $this->inboxFolder = $inboxFolder;
         $this->part = $part;
         $this->acc_id = $acc_id;
         $this->email = $email;
