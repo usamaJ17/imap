@@ -19,7 +19,6 @@ class FetchFrom implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $inboxFolder;
     private $part;
     private $acc_id;
     private $email;
