@@ -158,7 +158,7 @@ class ImapController extends Controller
                 dd("NO EMAIL");
             }else{
                 $emailId = $email->id;
-                $pageSize = 20; // Adjust this according to your requirements
+                $pageSize = 7; // Adjust this according to your requirements
                 $totalEmails = EmailFrom::where('email_id', $emailId)->count();
                 $totalPages = ceil($totalEmails / $pageSize);
                 for ($page = 1; $page <= $totalPages; $page++) {
