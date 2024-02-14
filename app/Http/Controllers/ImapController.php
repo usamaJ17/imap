@@ -10,7 +10,11 @@ use Webklex\IMAP\Facades\Client;
 use Webklex\PHPIMAP\ClientManager;
 use App\Exports\EmailExport;
 use App\Jobs\FetchFrom;
+use App\Jobs\ProcessScraping;
 use App\Models\Domain;
+use App\Models\OrgUnique;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use App\Models\ParentDomain;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -146,4 +150,46 @@ class ImapController extends Controller
     public function getExcel($id = null){
         return Excel::download(new EmailExport($id) ,'email.xlsx');
     }
+    public function scrap($id){
+
+        $email = Email::find($id);
+        if(!$email){
+            dd("NO EMAIL");
+        }else{
+            $emailId = $email->id;
+            $pageSize = 10; // Adjust this according to your requirements
+            $totalEmails = EmailFrom::where('email_id', $emailId)->count();
+            $totalPages = ceil($totalEmails / $pageSize);
+            for ($page = 1; $page <= $totalPages; $page++) {
+                ProcessScraping::dispatch($emailId, $page, $pageSize);
+            }
+            dd("Done");
+        }
+    }
+
+    public function test($id){
+        $email_conf = Email::where('id',$id)->first();    
+        $cm = new ClientManager('config/imap.php');
+        $client= $cm->make([
+            'host'          => 'imap.gmail.com',
+            'port'          => 993,
+            'encryption'    => 'ssl',
+            'validate_cert' => true,
+            'username'      => $email_conf->email,
+            'password'      => $email_conf->app_password,
+            'protocol'      => 'imap'
+        ]);    
+        $client->connect();
+        dd($client->isConnected());    
+    }
+
+
+    // $query->all()->chunked(function($messages, $chunk){
+    //     /** @var \Webklex\PHPIMAP\Support\MessageCollection $messages */
+    //     dump("chunk #$chunk");
+    //     $messages->each(function($message){
+    //         /** @var \Webklex\PHPIMAP\Message $message */
+    //         dump($message->uid);
+    //     });
+    // }, $chunk_size = 10, $start_chunk = 1);
 }
