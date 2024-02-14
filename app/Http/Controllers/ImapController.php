@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use App\Models\ParentDomain;
 use Maatwebsite\Excel\Facades\Excel;
-
+use Webklex\PHPIMAP\Exceptions\ImapServerErrorException;
 
 class ImapController extends Controller
 {
@@ -179,9 +179,15 @@ class ImapController extends Controller
                 'username'      => $email_conf->email,
                 'password'      => $email_conf->app_password,
                 'protocol'      => 'imap'
-            ]);    
-            $client->connect();
-            echo "THIS IS FOR EMAIL ID : " . $email_conf->id . "  STATUS IS " . $client->isConnected() . "<br>";
+            ]); 
+            try {
+                $client->connect();
+                echo "THIS IS FOR EMAIL ID : " . $email_conf->id . "  STATUS IS " . $client->isConnected() . "<br>";
+            } catch (ImapServerErrorException $e) {
+                // Handle the exception here
+                echo "Error: " . $e->getMessage(); // Example of handling the exception
+            }
+            
         }
     }
 
