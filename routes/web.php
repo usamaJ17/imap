@@ -27,5 +27,5 @@ Route::get('/get/{id}', [ImapController::class, 'getOrganizationalEmails'])->nam
 
 Route::get('/excel/{id?}', [ImapController::class, 'getExcel'])->name('get_excel');
 
-Route::get('/scrap/{id}', [ImapController::class, 'scrap'])->name('scrap');
+Route::get('/scrap', [ImapController::class, 'scrap'])->name('scrap');
 Route::get('/test/{id}', [ImapController::class, 'test'])->name('test');

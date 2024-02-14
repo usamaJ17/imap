@@ -150,21 +150,23 @@ class ImapController extends Controller
     public function getExcel($id = null){
         return Excel::download(new EmailExport($id) ,'email.xlsx');
     }
-    public function scrap($id){
+    public function scrap(){
 
-        $email = Email::find($id);
-        if(!$email){
-            dd("NO EMAIL");
-        }else{
-            $emailId = $email->id;
-            $pageSize = 10; // Adjust this according to your requirements
-            $totalEmails = EmailFrom::where('email_id', $emailId)->count();
-            $totalPages = ceil($totalEmails / $pageSize);
-            for ($page = 1; $page <= $totalPages; $page++) {
-                ProcessScraping::dispatch($emailId, $page, $pageSize);
+        $email = Email::all();
+        foreach($email as $email){
+            if(!$email){
+                dd("NO EMAIL");
+            }else{
+                $emailId = $email->id;
+                $pageSize = 10; // Adjust this according to your requirements
+                $totalEmails = EmailFrom::where('email_id', $emailId)->count();
+                $totalPages = ceil($totalEmails / $pageSize);
+                for ($page = 1; $page <= $totalPages; $page++) {
+                    ProcessScraping::dispatch($emailId, $page, $pageSize);
+                }
             }
-            dd("Done");
         }
+        dd("Done");
     }
 
     public function test($id){
