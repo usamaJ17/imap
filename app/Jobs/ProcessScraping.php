@@ -37,7 +37,6 @@ class ProcessScraping implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::info("thre");
         $email = Email::find($this->email_id);
         $offset = ($this->page - 1) * $this->page_size;
         $email_froms = EmailFrom::where('email_id', $this->email_id)
@@ -55,14 +54,11 @@ class ProcessScraping implements ShouldQueue
             'protocol'      => 'imap'
         ]);   
         $inboxFolder = $client->getFolderByName('INBOX');
-        Log::info("thre-2");
         foreach($email_froms as $from){
-            Log::info("thre-44");
-            $values = [2,2,3, 4];
+            $values = [2,3, 4];
             $randomNumber = $values[rand(0, count($values) - 1)];
             $counts = $inboxFolder->search()->from($from->email_from)->all()->limit($limit = $randomNumber, $page = 1)->get();
             foreach($counts as $count){
-                Log::info("thre-cc");
                 $scrap = new Scrap();
                 $scrap->email_id = $this->email_id;
                 $scrap->from_email = $from->email_from;
