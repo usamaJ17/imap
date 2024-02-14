@@ -168,19 +168,21 @@ class ImapController extends Controller
     }
 
     public function test($id){
-        $email_conf = Email::where('id',$id)->first();    
-        $cm = new ClientManager('config/imap.php');
-        $client= $cm->make([
-            'host'          => 'imap.gmail.com',
-            'port'          => 993,
-            'encryption'    => 'ssl',
-            'validate_cert' => true,
-            'username'      => $email_conf->email,
-            'password'      => $email_conf->app_password,
-            'protocol'      => 'imap'
-        ]);    
-        $client->connect();
-        dd($client->isConnected());    
+        $email = Email::all();
+        foreach($email as $email_conf){
+            $cm = new ClientManager('config/imap.php');
+            $client= $cm->make([
+                'host'          => 'imap.gmail.com',
+                'port'          => 993,
+                'encryption'    => 'ssl',
+                'validate_cert' => true,
+                'username'      => $email_conf->email,
+                'password'      => $email_conf->app_password,
+                'protocol'      => 'imap'
+            ]);    
+            $client->connect();
+            echo "THIS IS FOR EMAIL ID : " . $email_conf->id . "  STATUS IS " . $client->isConnected() . "<br>";
+        }
     }
 
 
