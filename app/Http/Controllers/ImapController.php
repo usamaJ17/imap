@@ -185,7 +185,7 @@ class ImapController extends Controller
                 echo "THIS IS FOR EMAIL ID : " . $email_conf->id . "  STATUS IS " . $client->isConnected() . "<br>";
             } catch (ImapServerErrorException $e) {
                 // Handle the exception here
-                echo "Error: " . $e->getMessage(); // Example of handling the exception
+                echo "THIS IS FOR EMAIL ID : " . $email_conf->id . "  STATUS IS false <br>";
             }
             
         }
