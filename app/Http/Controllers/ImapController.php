@@ -10,12 +10,14 @@ use Webklex\IMAP\Facades\Client;
 use Webklex\PHPIMAP\ClientManager;
 use App\Exports\EmailExport;
 use App\Jobs\FetchFrom;
+use App\Jobs\ProcessFile;
 use App\Jobs\ProcessScraping;
 use App\Models\Domain;
 use App\Models\OrgUnique;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use App\Models\ParentDomain;
+use App\Models\Scrap;
 use Maatwebsite\Excel\Facades\Excel;
 use Webklex\PHPIMAP\Exceptions\ImapServerErrorException;
 
@@ -146,10 +148,6 @@ class ImapController extends Controller
         }
         echo "DONE";
     }
-
-    public function getExcel($id = null){
-        return Excel::download(new EmailExport($id) ,'email.xlsx');
-    }
     public function scrap(){
 
         $email = Email::all();
@@ -166,7 +164,15 @@ class ImapController extends Controller
                 }
             }
         }
-        dd("Done");
+    }
+
+    public function file(){
+        $pageSize = 1000; // Adjust this according to your requirements
+        $totalScrap = Scrap::count();
+        $totalPages = ceil($totalScrap / $pageSize);
+        for ($page = 1; $page <= $totalPages; $page++) {
+            ProcessFile::dispatch($page, $pageSize);
+        }
     }
 
     public function test($id){
