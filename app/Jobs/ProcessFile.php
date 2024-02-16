@@ -39,7 +39,7 @@ class ProcessFile implements ShouldQueue
     {
         $page = $this->page;
         $page_size = $this->page_size;
-        $fileName = $page . '_' . Str::random(5) . '.xlsx';
+        $fileName = $page . '_' . Str::random(5) . '.csv';
         $filePath = 'exports/' . $fileName; // Define your custom folder here
         Excel::store(new ScrapDataExport($page, $page_size), $filePath);
     }
